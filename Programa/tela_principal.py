@@ -204,7 +204,7 @@ class Interface:
             Label(self.frame_campos_variaveis, text="Trechos:", bg="#F0F0F0").place(x=80, y=5)
             self.spin_trechos = Spinbox(self.frame_campos_variaveis, from_=1, to=10, width=5)
             self.spin_trechos.place(x=130, y=5)
-            self.spin_trechos.delete(0, END)g
+            self.spin_trechos.delete(0, END)
             self.spin_trechos.insert(0, "2")
 
     def calcular_viagem(self):
