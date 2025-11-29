@@ -1,33 +1,40 @@
 from main import *  
 from tkinter import *
+from tkinter import messagebox
 import webbrowser
 
 class Interface:
-    def __init__(self, onibus, metro, trem, barco):
-        self.onibus = onibus 
-        self.metro = metro
-        self.trem = trem
-        self.barco = barco
+    def __init__(self, janela):
+        self.janela = janela
+        self.janela.title("Sistema de Transporte Público")
+        self.janela.geometry("670x380")
+        self.janela.configure(background="#D6D6D6", padx=20, pady=20, )
+        self.sistema = Sistema_transporte()
+        self.entry_distancia = None
+        self.spin_zonas = None
+        self.spin_trechos = None
+
+        self.iniciar()
 
     def iniciar(self):
-        tela = Tk()
-        tela.title("Sistema de Transporte Público")
-        tela.configure(background="#D6D6D6", padx=20, pady=20, )
-        tela.geometry("670x400")
+        tela = Frame(self.janela)
+        tela.configure(bg="#D6D6D6")
+        tela.pack(fill=BOTH, expand=True)
+        
 
         nome_programa = Label(tela, text="Sistema de Transporte Publico", bg="#D6D6D6")
         nome_programa.pack(anchor="center", side="top")
 
-        creditos = Button(tela, text="DEV by: Carlos Henrique - Felipe de Almeida", bg="#CCCCCC", command=self.abrir_repositório, border=0)
+        creditos = Button(tela, text="DEV by: Carlos Henrique - Felipe de Almeida", bg="#CCCCCC", command=self.abrir_repositorio, border=0)
         creditos.pack(anchor="se", side="bottom")
 
         # Frame à esquerda
-        frame_esq = Frame(tela, width=290, height=260, bg="#D6D6D6")
-        frame_esq.pack(side="left")
+        frame_esq = Frame(tela, width=290, height=290, bg="#D6D6D6" )
+        frame_esq.pack(side="left", anchor="nw")
 
         # #
         # Fundo da seção principal do frame da esquerda
-        back_sec_principal = Frame(frame_esq, width=290, height=130, bg="#ffffff")
+        back_sec_principal = Frame(frame_esq, width=290, height=130, bg="#ffffff" )
         back_sec_principal.place(x=0, y=0)
 
         # ##
@@ -37,7 +44,7 @@ class Interface:
 
         # ##
         # Bloco da sessão prinipal
-        bloco_sessao_primaria = Frame(back_sec_principal, width=290, height=254, padx=5, pady=5, border=0.5, bg="#ffffff")
+        bloco_sessao_primaria = Frame(back_sec_principal, width=290, height=110, padx=5, pady=5, border=0.5, bg="#ffffff", relief='solid',borderwidth=1)
         bloco_sessao_primaria.place(x=0, y=20)
 
         # ###
@@ -47,30 +54,32 @@ class Interface:
 
         # ####
         # Radio butons e labels relativas
-        var_transporte = StringVar()
-        radio_onibus = Radiobutton(bloco_int, text="Ônibus", bg="#D6D6D6", variable=var_transporte, value="onibus", activebackground="#D6D6D6")
+        self.transporte_selecionado = StringVar(value='onibus')
+
+        radio_onibus = Radiobutton(bloco_int, text="Ônibus", bg="#D6D6D6", variable=self.transporte_selecionado, value="onibus", activebackground="#D6D6D6", command=self.mostrar_campos_adicionais)
         radio_onibus.place(x=5, y=5)
-        tarifa_onibus = Label(bloco_int, text=f"Tarifa:    (Fixa) R${self.onibus.tarifa}", bg="#D6D6D6")
+        tarifa_onibus = Label(bloco_int, text=f"Tarifa:    (Fixa) R$ {self.sistema.veiculos['onibus'].calcular_tarifa():.2f}", bg="#D6D6D6")
         tarifa_onibus.place(x=95, y=7)
 
-        radio_metro = Radiobutton(bloco_int, text="Metrô", bg="#D6D6D6", variable=var_transporte, value="metro", activebackground="#D6D6D6")
+        radio_metro = Radiobutton(bloco_int, text="Metrô", bg="#D6D6D6", variable=self.transporte_selecionado, value="metro", activebackground="#D6D6D6", command=self.mostrar_campos_adicionais)
         radio_metro.place(x=5, y=25)
-        tarifa_metro = Label(bloco_int, text="Tarifa:    (base) + por distancia", bg="#D6D6D6")
+        tarifa_metro = Label(bloco_int, text=f"Tarifa:    (base) + por distancia", bg="#D6D6D6")
         tarifa_metro.place(x=95, y=27)
 
-        radio_trem = Radiobutton(bloco_int, text="Trem", bg="#D6D6D6", variable=var_transporte, value="trem", activebackground="#D6D6D6")
+        radio_trem = Radiobutton(bloco_int, text="Trem", bg="#D6D6D6", variable=self.transporte_selecionado, value="trem", activebackground="#D6D6D6", command=self.mostrar_campos_adicionais)
         radio_trem.place(x=5, y=45)
         tarifa_trem = Label(bloco_int, text="Tarifa:    Por zonas", bg="#D6D6D6")
         tarifa_trem.place(x=95, y=47)
 
-        radio_barco = Radiobutton(bloco_int, text="Barco", bg="#D6D6D6", variable=var_transporte, value="barco", activebackground="#D6D6D6")
+        radio_barco = Radiobutton(bloco_int, text="Barco", bg="#D6D6D6", variable=self.transporte_selecionado, value="barco", activebackground="#D6D6D6", command=self.mostrar_campos_adicionais)
         radio_barco.place(x=5, y=65)
         tarifa_barco = Label(bloco_int, text="Tarifa:    Por trechos", bg="#D6D6D6")
         tarifa_barco.place(x=95, y=67)
 
+
         # #
         # Fundo da seção de notas
-        bloco_sessao_notas = Frame(frame_esq, width=290, height=80, padx=15, pady=2, bg="#B8EBB8")
+        bloco_sessao_notas = Frame(frame_esq, width=290, height=80, padx=15, pady=2, bg="#B8EBB8", relief="solid",borderwidth=1)
         bloco_sessao_notas.place(x=0, y=140)
 
         # ##
@@ -91,14 +100,22 @@ class Interface:
         c1 = Label(bloco_sessao_notas, text="° Tarifas especificas de cada transporte", bg="#B8EBB8")
         c1.place(x=0, y=50)
 
+        # 
+        # Frame para campos variáveis
+        self.frame_campos_variaveis = Frame(frame_esq, width=270, height=50, bg="#F0F0F0")
+        self.frame_campos_variaveis.place(x=10, y=220)
+
+        self.mostrar_campos_adicionais()
+
         # #
         # Botão para calcular a viagem
-        calc_btn = Button(frame_esq, text="Calcular Viagem", width=15, height=1, bg="#A3A3A3", command=self.calcular)
-        calc_btn.place(x=80, y=228)
+        self.calc_btn = Button(frame_esq, text="Calcular Viagem", width=15, height=1, bg="#A3A3A3", command=self.calcular_viagem, relief="solid",borderwidth=1)   
+        self.calc_btn.place(x=80, y=260)
+            
 
         # Frame à direita
         frame_dir = Frame(tela, width=290, height=260, bg="#ffffff")
-        frame_dir.pack(anchor="e", side="right")
+        frame_dir.pack(anchor="ne", side="right")
 
         # #
         # Nome da sessão
@@ -107,50 +124,44 @@ class Interface:
 
         # #
         # Fundo da sessão
-        back_sec = Frame(frame_dir, width=290, height=150, border=1, bg="#ffffff")
+        back_sec = Frame(frame_dir, width=290, height=145, border=1, bg="#ffffff", relief="solid",borderwidth=1)
         back_sec.place(x=0, y=20)
 
         # ##
         # Fromatação do fundo da sessão
-        bloco_back = Frame(back_sec, width=265, height=137, bg="#D6D6D6")
+        bloco_back = Frame(back_sec, width=265, height=130, bg="#D6D6D6")
         bloco_back.place(x=12, y=12)
 
         # ###
         # Labels de dados
-        veiculo = "veiculo"
-        tarifa = 0.0
-        tempo_esp = "T minutos"
-        tempo_via = "T horas"
-        cheg_estim = "hh:mm"
+        self.label_veiculo = Label(bloco_back, text="Veículo:", bg="#D6D6D6")
+        self.label_veiculo.place(x=10, y=5)
+        self.lbl_dado_veiculo = Label(bloco_back, text="---", bg="#D6D6D6")
+        self.lbl_dado_veiculo.place(x=150, y=5)
 
-        label_veiculo = Label(bloco_back, text="Veículo:", bg="#D6D6D6")
-        label_veiculo.place(x=10, y=5)
-        lbl_dado_veiculo = Label(bloco_back, text=f" {veiculo}", bg="#D6D6D6")
-        lbl_dado_veiculo.place(x=150, y=5)
+        self.label_tarifa = Label(bloco_back, text="Tarifa:", bg="#D6D6D6")
+        self.label_tarifa.place(x=10, y=30)
+        self.lbl_dado_tarifa = Label(bloco_back, text="R$ 0.00", bg="#D6D6D6")
+        self.lbl_dado_tarifa.place(x=150, y=30)
 
-        label_tarifa = Label(bloco_back, text="Tarifa:", bg="#D6D6D6")
-        label_tarifa.place(x=10, y=30)
-        lbl_dado_tarifa = Label(bloco_back, text=f" {tarifa}", bg="#D6D6D6")
-        lbl_dado_tarifa.place(x=150, y=30)
+        self.label_tempEspera = Label(bloco_back, text="Tempo de espera:", bg="#D6D6D6")
+        self.label_tempEspera.place(x=10, y=55)
+        self.lbl_dado_tempEspera = Label(bloco_back, text="0 minutos", bg="#D6D6D6")
+        self.lbl_dado_tempEspera.place(x=150, y=55)
 
-        label_tempEspera = Label(bloco_back, text="Tempo de espera:", bg="#D6D6D6")
-        label_tempEspera.place(x=10, y=55)
-        lbl_dado_tempEspera = Label(bloco_back, text=f" {tempo_esp}", bg="#D6D6D6")
-        lbl_dado_tempEspera.place(x=150, y=55)
+        self.label_tempViagem = Label(bloco_back, text="Tempo de viagem:", bg="#D6D6D6")
+        self.label_tempViagem.place(x=10, y=80)
+        self.lbl_dado_tempViagem = Label(bloco_back, text="0 minutos", bg="#D6D6D6")
+        self.lbl_dado_tempViagem.place(x=150, y=80)
 
-        label_tempViagem = Label(bloco_back, text="Tempo de viagem:", bg="#D6D6D6")
-        label_tempViagem.place(x=10, y=80)
-        lbl_dado_tempViagem = Label(bloco_back, text=f" {tempo_via}", bg="#D6D6D6")
-        lbl_dado_tempViagem.place(x=150, y=80)
-
-        label_chegEstimada = Label(bloco_back, text="Chegada estimada:", bg="#D6D6D6")
-        label_chegEstimada.place(x=10, y=105)
-        lbl_dado_chegEstimada = Label(bloco_back, text=f" {cheg_estim}", bg="#D6D6D6")
-        lbl_dado_chegEstimada.place(x=150, y=105)
+        self.label_chegEstimada = Label(bloco_back, text="Chegada estimada:", bg="#D6D6D6")
+        self.label_chegEstimada.place(x=10, y=105)
+        self.lbl_dado_chegEstimada = Label(bloco_back, text="--:--", bg="#D6D6D6")
+        self.lbl_dado_chegEstimada.place(x=150, y=105)
 
         # #
         # Fundo da subsessão
-        back_sub = Frame(frame_dir, width=290, height=110, border=1,  bg="#ffffff")
+        back_sub = Frame(frame_dir, width=290, height=95, border=1,  bg="#ffffff",relief="solid",borderwidth=1)
         back_sub.place(x=0, y=165)
 
         # ##
@@ -165,30 +176,108 @@ class Interface:
 
         # ####
         # Botão de comparação
-        compar_btn = Button(bloco_sub, width=20, height=1, text="Comparar Todas as Tarifas", command=self.comparar)
+        compar_btn = Button(bloco_sub, width=20, height=1, text="Comparar Todas as Tarifas", command=self.comparar,relief="solid",borderwidth=1,bg="#A3A3A3")
         compar_btn.place(x=60, y=18)
 
-        tela.mainloop()
+    def mostrar_campos_adicionais(self):
 
-    def abrir_repositório():
+
+        for dado in self.frame_campos_variaveis.winfo_children():
+            dado.destroy()
+
+        trasnporte = self.transporte_selecionado.get()
+
+        if(trasnporte == 'metro'):
+            Label(self.frame_campos_variaveis, text="Distancia (km):", bg="#F0F0F0").place(x=65, y=5)
+            self.entry_distancia = Entry(self.frame_campos_variaveis, width=10)
+            self.entry_distancia.place(x=120, y=5)
+            self.entry_distancia.insert(0, "10")
+
+        elif(trasnporte == 'trem'):
+            Label(self.frame_campos_variaveis, text="Zonas:", bg="#F0F0F0").place(x=80, y=5)
+            self.spin_zonas = Spinbox(self.frame_campos_variaveis, from_=1, to=10, width=5)
+            self.spin_zonas.place(x=120, y=5)
+            self.spin_zonas.delete(0, END)
+            self.spin_zonas.insert(0, "3")
+
+        elif(trasnporte == 'barco'):
+            Label(self.frame_campos_variaveis, text="Trechos:", bg="#F0F0F0").place(x=80, y=5)
+            self.spin_trechos = Spinbox(self.frame_campos_variaveis, from_=1, to=10, width=5)
+            self.spin_trechos.place(x=130, y=5)
+            self.spin_trechos.delete(0, END)g
+            self.spin_trechos.insert(0, "2")
+
+    def calcular_viagem(self):
+        try:
+            transporte = self.transporte_selecionado.get()
+
+            parametros_extras = {}
+            distancia = 0
+
+            if(transporte == 'metro'):
+                if(self.entry_distancia):
+                    distancia = float(self.entry_distancia.get())
+            
+            elif(transporte == 'trem'):
+                if(self.spin_zonas):
+                    parametros_extras['zonas'] = int(self.spin_zonas.get())
+
+            elif(transporte == 'barco'):
+                if(self.spin_trechos):
+                    parametros_extras['trechos'] = int(self.spin_trechos.get())
+                
+            resultado = self.sistema.calcular_viagem(transporte, distancia, **parametros_extras)
+
+            self.atualizar_resultados(resultado)
+
+        except ValueError:
+            messagebox.showerror("Erro:", "Por favor, insira valores válidos.")
+
+        except Exception as e:
+            messagebox.showerror("Erro:", f"Ocorreu um erro {str(e)}")
+            
+
+    def atualizar_resultados(self, resultado):
+
+        
+        self.lbl_dado_veiculo.config(text=resultado['veiculo'])
+        self.lbl_dado_tarifa.config(text=f"R$ {resultado['tarifa']:.2f}")
+        self.lbl_dado_tempEspera.config(text=f"{resultado['tempo_espera'].seconds //60} minutos")
+        self.lbl_dado_tempViagem.config(text=f"{resultado['tempo_viagem'].seconds //60} minutos")
+        self.lbl_dado_chegEstimada.config(text=resultado['chegada_estimada'].strftime('%H:%M'))
+
+
+
+    def abrir_repositorio(self):
         webbrowser.open_new("https://github.com/FG333k/Sistema_trasporte")
 
-    def calcular():
-        pass
 
-    def comparar():
-        pass
+    def comparar(self):
+        # Criar janela de comparação
+        janela_comparacao = Toplevel(self.janela)
+        janela_comparacao.title("Comparação de Tarifas")
+        janela_comparacao.geometry("400x300")
+        
+        Label(janela_comparacao, text="Comparação de Tarifas", font=("Arial", 14, "bold")).pack(pady=10)
+        
+        # Calcular tarifas para comparação
+        texto_comparacao = ""
+        for nome, veiculo in self.sistema.veiculos.items():
+            if nome == 'metro':
+                tarifa = veiculo.calcular_tarifa(10)  # 10km exemplo
+            elif nome == 'trem':
+                tarifa = veiculo.calcular_tarifa(zonas=3)  # 3 zonas exemplo
+            elif nome == 'barco':
+                tarifa = veiculo.calcular_tarifa(trechos=2)  # 2 trechos exemplo
+            else:
+                tarifa = veiculo.calcular_tarifa()
+                
+            texto_comparacao += f"{veiculo.tipo}: R$ {tarifa}\n"
+        
+        Label(janela_comparacao, text=texto_comparacao, font=("Arial", 12)).pack(pady=20)
 
-    def dados_viagem(self, var_transporte):
-        if(var_transporte == "onibus"):
-            pass
 
 
-
-O1 = Onibus(45, 79, 2.5)
-M1 = Metro("not", 4, 5)
-T1 = Trem("not", 4, 5)
-B1 = Barco("not", 4, 5)
-
-run = Interface(O1, M1, T1, B1)
-run.iniciar()
+janela = Tk()
+aplicacao = Interface(janela)
+janela.mainloop()
