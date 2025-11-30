@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import *
 from sqlite3 import *
 
 # Crialçaão da classe abstrata
@@ -219,7 +219,7 @@ class Sistema_transporte:
         
         # Pega o objeto deo veículo selecionádo
         veiculo = self.veiculos[tipo_veiculo]
-        hora_atual = datetime.now()     # Obtem a hora atual
+        hora_atual = datetime.datetime.now()    # Obtem a hora atual
 
         # Calcula a tarifa e o tempo de espera usando o métodos polimorfos
         tarifa = veiculo.calcular_tarifa(distancia, **kwargs)
@@ -231,8 +231,6 @@ class Sistema_transporte:
         else:
             # Caso valores fiquem defaut
             tempo_viagem = timedelta(minutes=15)
-
-        print("função na classe sistema transporte ativada")
 
         return {
             'veiculo': veiculo.tipo,
