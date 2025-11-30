@@ -171,7 +171,7 @@ class Barco(Trasporte):
         else:
             return timedelta(minutes=60)
 
-# Tetativa de coneção ao banco de dados 
+# Tetativa de coneção ao banco de dados (para configrações ADM)
 class Dados:
     def __init__(self):
         self.conn = connect('dados_trasnporte.db', check_same_thread=False)

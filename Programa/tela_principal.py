@@ -22,15 +22,31 @@ class Interface:
         tela.pack(fill=BOTH, expand=True)
         
 
-        nome_programa = Label(tela, text="Sistema de Transporte Publico", bg="#D6D6D6")
+        nome_programa = Label(
+            tela,
+            text="Sistema de Transporte Publico",
+            bg="#D6D6D6"
+        )
         nome_programa.pack(anchor="center", side="top")
 
-        creditos = Button(tela, text="DEV by: Carlos Henrique - Felipe de Almeida", bg="#CCCCCC", command=self.abrir_repositorio, border=0)
+        creditos = Button(
+            tela,
+            text="DEV by: Carlos Henrique - Felipe de Almeida",
+            bg="#CCCCCC",
+            command=self.abrir_repositorio,
+            border=0
+        )
         creditos.pack(anchor="se", side="bottom")
 
         # Frame à esquerda
-        frame_esq = Frame(tela, width=290, height=290, bg="#D6D6D6" )
+        frame_esq = Frame(
+            tela,
+            width=290,
+            height=290,
+            bg="#D6D6D6"
+        )
         frame_esq.pack(side="left", anchor="nw")
+        # Cansei nesse kkkkkkk
 
         # #
         # Fundo da seção principal do frame da esquerda
@@ -252,6 +268,7 @@ class Interface:
         webbrowser.open_new("https://github.com/FG333k/Sistema_trasporte")
 
 
+    # Janela da tabela de comparação
     def comparar(self):
         # Criar janela de comparação
         janela_comparacao = Toplevel(self.janela)
