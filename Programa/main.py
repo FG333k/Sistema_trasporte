@@ -225,29 +225,20 @@ class Sistema_transporte:
         tarifa = veiculo.calcular_tarifa(distancia, **kwargs)
         tempo_espera = veiculo.calcular_tempo_espera(hora_atual)
 
-        # Calcula tempo de espera usando polimorfismo
+        # Calcula tempo de viagem usando polimorfismo
         if(distancia > 0 and veiculo.getVelocidade_media() > 0):
             tempo_viagem = timedelta(hours=distancia / veiculo.getVelocidade_media())
         else:
             # Caso valores fiquem defaut
             tempo_viagem = timedelta(minutes=15)
 
+        # calcular chegada estimada
+        chegada_estimada = hora_atual + tempo_espera + tempo_viagem
+
         return {
             'veiculo': veiculo.tipo,
             'tarifa': tarifa,
             'tempo_espera': tempo_espera,
             'tempo_viagem': tempo_viagem,
-            'chegada_estimada': hora_atual + tempo_espera + tempo_viagem
+            'chegada_estimada': chegada_estimada
         }
-
-
-
-# O1 = Onibus(5, 45, 75)
-# print(O1.tipo)
-# print(O1.tarifa_basica)
-# print(O1.capacidade)
-# print(O1.velocidade_media)
-# print(O1.intervalo_medio)
-
-# print(O1.calcular_tarifa())
-# O1.calcularTarifa(T1.get_tarifa_padra)

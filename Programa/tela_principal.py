@@ -8,6 +8,7 @@ class Interface:
         self.janela = janela
         self.janela.title("Sistema de Transporte Público")
         self.janela.geometry("670x380")
+        self.janela.resizable('false','false')
         self.janela.configure(background="#D6D6D6", padx=20, pady=20, )
         self.sistema = Sistema_transporte()
         self.entry_distancia = None
@@ -15,6 +16,7 @@ class Interface:
         self.spin_trechos = None
 
         self.iniciar()
+        self.janela.mainloop()
 
     def iniciar(self):
         tela = Frame(self.janela)
@@ -204,7 +206,7 @@ class Interface:
         trasnporte = self.transporte_selecionado.get()
 
         if(trasnporte == 'metro'):
-            Label(self.frame_campos_variaveis, text="Distancia (km):", bg="#F0F0F0").place(x=65, y=5)
+            Label(self.frame_campos_variaveis, text="Distancia            (km):", bg="#F0F0F0").place(x=65, y=5)
             self.entry_distancia = Entry(self.frame_campos_variaveis, width=10)
             self.entry_distancia.place(x=120, y=5)
             self.entry_distancia.insert(0, "10")
@@ -229,6 +231,7 @@ class Interface:
 
             parametros_extras = {}
             distancia = 0
+            zonas = ""
 
             if(transporte == 'metro'):
                 if(self.entry_distancia):
@@ -270,31 +273,9 @@ class Interface:
 
     # Janela da tabela de comparação
     def comparar(self):
-        # Criar janela de comparação
         janela_comparacao = Toplevel(self.janela)
-        janela_comparacao.title("Comparação de Tarifas")
-        janela_comparacao.geometry("400x300")
-        
-        Label(janela_comparacao, text="Comparação de Tarifas", font=("Arial", 14, "bold")).pack(pady=10)
-        
-        # Calcular tarifas para comparação
-        texto_comparacao = ""
-        for nome, veiculo in self.sistema.veiculos.items():
-            if nome == 'metro':
-                tarifa = veiculo.calcular_tarifa(10)  # 10km exemplo
-            elif nome == 'trem':
-                tarifa = veiculo.calcular_tarifa(zonas=3)  # 3 zonas exemplo
-            elif nome == 'barco':
-                tarifa = veiculo.calcular_tarifa(trechos=2)  # 2 trechos exemplo
-            else:
-                tarifa = veiculo.calcular_tarifa()
-                
-            texto_comparacao += f"{veiculo.tipo}: R$ {tarifa}\n"
-        
-        Label(janela_comparacao, text=texto_comparacao, font=("Arial", 12)).pack(pady=20)
-
-
+        from tela_comparacao_tarif import Application
+        Application(janela_comparacao)
 
 janela = Tk()
 aplicacao = Interface(janela)
-janela.mainloop()

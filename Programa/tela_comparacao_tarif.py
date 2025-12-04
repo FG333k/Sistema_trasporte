@@ -1,16 +1,14 @@
-import main
+import main     # Importação do arquivo principal
 from tkinter import *
 
-janela = Tk()
-
 class Application():
-    def __init__(self,janela):
+    def __init__(self, janela):
             self.sistem = main.Sistema_transporte()
             self.janela = janela
             self.tela()
             self.textTela()
             self.frameTela()
-            janela.mainloop()
+            
 
     def tela(self):
             self.janela.title("Comparação de Tarifas",)
@@ -85,19 +83,3 @@ class Application():
             self.texto.place(relx=0.80, rely=0.35, relwidth=0.07, relheight=0.1)
             self.texto = Label(self.frame_1, text="20-60 min", font=("Times",10),fg="black")
             self.texto.place(relx=0.80, rely=0.48, relwidth=0.09, relheight=0.1)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Application(janela)
