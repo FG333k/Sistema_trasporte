@@ -1,6 +1,7 @@
 import main     # Importação do arquivo principal
 from tkinter import *
 
+# criação da classe janela, onde todos os elementos irão aparecer na tela 
 class Application():
     def __init__(self, janela):
             self.sistem = main.Sistema_transporte()
@@ -9,18 +10,21 @@ class Application():
             self.textTela()
             self.frameTela()
             
-
+    #Conteudo da janela e tamanho         
     def tela(self):
             self.janela.title("Comparação de Tarifas",)
             self.janela.geometry('700x500')
             self.janela.resizable('false','false')
 
+
+#        textos da tela 
     def textTela(self):
             self.titulo = Label(self.janela, text="Comparação de Tarifas Por Transporte", font=("Arial",20,"bold"),height=2,width=50)  
             self.titulo.place( x=-91 , y=36 )
             self.nota = Label(self.janela, text="Tempo de espera varia conforme horário pico/fora de pico", font=("impact",10))
             self.nota.place(x=180,y=465)
 
+# Frames da tela 
     def frameTela(self):
             self.frame_1 = Frame(self.janela, bd=2, highlightbackground= 'black' , highlightthickness=1.5)
             self.frame_1.place(relx=0.04,rely=0.25 , relwidth=0.91, relheight=0.45 )
