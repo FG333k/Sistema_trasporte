@@ -9,14 +9,14 @@ class Trasporte:
         self.tipo = tipo
         self.tarifa_base = tarifa_base
         self.capacidade = capacidade
-        self.__velocidade_media = 0
+        self._velocidade_media = 0
 
     # Métodos get e set para o atributo privado
     def getVelocidade_media(self):
-        return self.__velocidade_media
+        return self._velocidade_media
     
     def setVelocidade_media(self, valor):
-        self.__velocidade_media = valor
+        self._velocidade_media = valor
         
     # Métodos padrão (abstratos) que devem ser implementdaos nas classes herdeiras
     def calcular_tarifa(self, distancia: float = 0, **kwargs) -> float: 
@@ -227,6 +227,7 @@ class Sistema_transporte:
 
         # Calcula tempo de viagem usando polimorfismo
         if(distancia > 0 and veiculo.getVelocidade_media() > 0):
+            # calcula a diferença do tempo 
             tempo_viagem = timedelta(hours=distancia / veiculo.getVelocidade_media())
         else:
             # Caso valores fiquem defaut
@@ -235,7 +236,7 @@ class Sistema_transporte:
         # calcular chegada estimada
         chegada_estimada = hora_atual + tempo_espera + tempo_viagem
 
-        return {
+        return {        # Dicionário de resultados
             'veiculo': veiculo.tipo,
             'tarifa': tarifa,
             'tempo_espera': tempo_espera,

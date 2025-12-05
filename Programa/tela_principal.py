@@ -1,54 +1,41 @@
-from main import *  
+from main import *      # Importando arquivo principal do sistema
 from tkinter import *
-from tkinter import messagebox
-import webbrowser
+from tkinter import messagebox 
+import webbrowser   # biblioteca para abrir o navegador
 
 class Interface:
     def __init__(self, janela):
         self.janela = janela
         self.janela.title("Sistema de Transporte Público")
-        self.janela.geometry("670x380")
+        self.janela.geometry("670x390")
         self.janela.resizable('false','false')
         self.janela.configure(background="#D6D6D6", padx=20, pady=20, )
-        self.sistema = Sistema_transporte()
+        self.sistema = Sistema_transporte()     # Instancia da classe Sistema_transporte do arquivo main
+
+        # Criação de campos variáveis 
         self.entry_distancia = None
         self.spin_zonas = None
         self.spin_trechos = None
 
+        # Chamada do método que inicia a interface principal
         self.iniciar()
-        self.janela.mainloop()
 
     def iniciar(self):
         tela = Frame(self.janela)
         tela.configure(bg="#D6D6D6")
         tela.pack(fill=BOTH, expand=True)
         
-
-        nome_programa = Label(
-            tela,
-            text="Sistema de Transporte Publico",
-            bg="#D6D6D6"
-        )
+        # Titulo do programa
+        nome_programa = Label(tela, text="Sistema de Transporte Publico", font=("Times New Roman", 20, "bold"), bg="#D6D6D6")
         nome_programa.pack(anchor="center", side="top")
 
-        creditos = Button(
-            tela,
-            text="DEV by: Carlos Henrique - Felipe de Almeida",
-            bg="#CCCCCC",
-            command=self.abrir_repositorio,
-            border=0
-        )
+        # Botão qua e leva para o repositório do projeto
+        creditos = Button(tela, text="DEV by: Carlos Henrique - Felipe de Almeida",bg="#A3A3A3", command=self.abrir_repositorio, cursor="hand2", relief="solid",borderwidth=1)
         creditos.pack(anchor="se", side="bottom")
 
         # Frame à esquerda
-        frame_esq = Frame(
-            tela,
-            width=290,
-            height=290,
-            bg="#D6D6D6"
-        )
+        frame_esq = Frame(tela, width=290, height=290, bg="#D6D6D6")
         frame_esq.pack(side="left", anchor="nw")
-        # Cansei nesse kkkkkkk
 
         # #
         # Fundo da seção principal do frame da esquerda
@@ -72,10 +59,10 @@ class Interface:
 
         # ####
         # Radio butons e labels relativas
-        self.transporte_selecionado = StringVar(value='onibus')
+        self.transporte_selecionado = StringVar(value='onibus')     # Criação da variavel ppara armazenar valores dos radio buttons
 
         radio_onibus = Radiobutton(bloco_int, text="Ônibus", bg="#D6D6D6", variable=self.transporte_selecionado, value="onibus", activebackground="#D6D6D6", command=self.mostrar_campos_adicionais)
-        radio_onibus.place(x=5, y=5)
+        radio_onibus.place(x=5, y=5)                            # Mantem sempre atualizado de acordo com a tarifa do onibus
         tarifa_onibus = Label(bloco_int, text=f"Tarifa:    (Fixa) R$ {self.sistema.veiculos['onibus'].calcular_tarifa():.2f}", bg="#D6D6D6")
         tarifa_onibus.place(x=95, y=7)
 
@@ -123,11 +110,12 @@ class Interface:
         self.frame_campos_variaveis = Frame(frame_esq, width=270, height=50, bg="#F0F0F0")
         self.frame_campos_variaveis.place(x=10, y=220)
 
+        # Chama método para verificar a exibição dos campos adicionais
         self.mostrar_campos_adicionais()
 
         # #
         # Botão para calcular a viagem
-        self.calc_btn = Button(frame_esq, text="Calcular Viagem", width=15, height=1, bg="#A3A3A3", command=self.calcular_viagem, relief="solid",borderwidth=1)   
+        self.calc_btn = Button(frame_esq, text="Calcular Viagem", width=15, height=1, bg="#A3A3A3", command=self.calcular_viagem, relief="solid",borderwidth=1, cursor="hand2")   
         self.calc_btn.place(x=80, y=260)
             
 
@@ -151,7 +139,7 @@ class Interface:
         bloco_back.place(x=12, y=12)
 
         # ###
-        # Labels de dados
+        # Labels de dados (inicialmente)
         self.label_veiculo = Label(bloco_back, text="Veículo:", bg="#D6D6D6")
         self.label_veiculo.place(x=10, y=5)
         self.lbl_dado_veiculo = Label(bloco_back, text="---", bg="#D6D6D6")
@@ -194,19 +182,21 @@ class Interface:
 
         # ####
         # Botão de comparação
-        compar_btn = Button(bloco_sub, width=20, height=1, text="Comparar Todas as Tarifas", command=self.comparar,relief="solid",borderwidth=1,bg="#A3A3A3")
+        compar_btn = Button(bloco_sub, width=20, height=1, text="Comparar Todas as Tarifas", command=self.comparar,relief="solid",borderwidth=1,bg="#A3A3A3", cursor="hand2")
         compar_btn.place(x=60, y=18)
 
     def mostrar_campos_adicionais(self):
-
-
+        
+        # Loop para apagar os componentes do frame
         for dado in self.frame_campos_variaveis.winfo_children():
             dado.destroy()
 
+        # Atribuição do transporte selecionado para uma variável
         trasnporte = self.transporte_selecionado.get()
 
-        if(trasnporte == 'metro'):
-            Label(self.frame_campos_variaveis, text="Distancia            (km):", bg="#F0F0F0").place(x=65, y=5)
+        # Verificaçãoes dos tipos de veículo para exibição dos seus relativos campos
+        if(trasnporte == 'metro'):                          # Espaço para exibição
+            Label(self.frame_campos_variaveis, text="Distancia                        (km):", bg="#F0F0F0").place(x=65, y=5)
             self.entry_distancia = Entry(self.frame_campos_variaveis, width=10)
             self.entry_distancia.place(x=120, y=5)
             self.entry_distancia.insert(0, "10")
@@ -227,12 +217,14 @@ class Interface:
 
     def calcular_viagem(self):
         try:
+            # Atribuiaa veriável o transporte selecionado
             transporte = self.transporte_selecionado.get()
 
+            # Dicioário para receber parametros extras (trem, barco)
             parametros_extras = {}
-            distancia = 0
-            zonas = ""
+            distancia = 0   # Valor defaut
 
+            # Verificação to tipo de veículo para para atribuição dos valores ao seus respectívos atributos
             if(transporte == 'metro'):
                 if(self.entry_distancia):
                     distancia = float(self.entry_distancia.get())
@@ -245,20 +237,24 @@ class Interface:
                 if(self.spin_trechos):
                     parametros_extras['trechos'] = int(self.spin_trechos.get())
                 
+            # Variável de armazenamento do retorno do método calcular_viagem
             resultado = self.sistema.calcular_viagem(transporte, distancia, **parametros_extras)
 
+            # Chama o método passando a variável de armazenamento como argumento
             self.atualizar_resultados(resultado)
 
         except ValueError:
+            # Caso tipo de dado inválido
             messagebox.showerror("Erro:", "Por favor, insira valores válidos.")
 
         except Exception as e:
+            # Caso outro esso não específico
             messagebox.showerror("Erro:", f"Ocorreu um erro {str(e)}")
             
 
     def atualizar_resultados(self, resultado):
 
-        
+        # Substitui cada text dos labels
         self.lbl_dado_veiculo.config(text=resultado['veiculo'])
         self.lbl_dado_tarifa.config(text=f"R$ {resultado['tarifa']:.2f}")
         self.lbl_dado_tempEspera.config(text=f"{resultado['tempo_espera'].seconds //60} minutos")
@@ -267,8 +263,10 @@ class Interface:
 
 
 
+    # Método para abrir o navegador - Repositório do projeto
     def abrir_repositorio(self):
         webbrowser.open_new("https://github.com/FG333k/Sistema_trasporte")
+        messagebox.showinfo(title="Nota! ", message="Pedido = \"Provalvelmente vamos continuar trabalhando nesse projeto, gostariamos que você o acompanhase! :V \"", icon='question')
 
 
     # Janela da tabela de comparação
@@ -277,5 +275,9 @@ class Interface:
         from tela_comparacao_tarif import Application
         Application(janela_comparacao)
 
-janela = Tk()
-aplicacao = Interface(janela)
+
+# Executa a interface
+if __name__ == "__main__":
+    janela = Tk()
+    aplicacao = Interface(janela)
+    janela.mainloop()
