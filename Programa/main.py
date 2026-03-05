@@ -1,4 +1,4 @@
-from datetime import *
+import datetime
 from sqlite3 import *
 
 # Crialçaão da classe abstrata
